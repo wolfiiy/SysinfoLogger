@@ -2,44 +2,34 @@
 .NOTES
     *****************************************************************************
     ETML
-    Script's name:	CanevasV3-EN.ps1
-    Author:	
-    Date:	dd.mm.yyyy
- 	*****************************************************************************
-    Modifications
- 	Date  : -
- 	Author: -
- 	Reasons: -
- 	*****************************************************************************
+    Script name: Sysinfo Logger
+    Author: Valentin PIGNAT, Sebastien TILLE
+    Date: January 24th, 2024
+    *****************************************************************************
+
 .SYNOPSIS
-	Light information about the script, could be the title
- 	
+    Logging system data
+
 .DESCRIPTION
-    Explanations about the script with details, what it does, what kind of tests and some possible results
-  	
-.PARAMETER Param1
-    Description of the first parameter with limits and requirements
-	
-.PARAMETER Param2
-    Description of the second parameter with limits and requirements
- 	
-.PARAMETER Param3
-    Description of the third parameter with limits and requirements
+    This script gets and logs system information. Data collected:
+    - Hostname
+    - OS version
+    - Disk usage
+    - Memory usage
+    - Software installed
+    - TODO
+
+.PARAMETER RemoteIP
+    IP address of a remote computer.
 
 .OUTPUTS
-	What the script do, like output files or system modifications
+    The script logs the gathered data inside of the sysinfo.log file.
 	
 .EXAMPLE
-	.\CanevasV3.ps1 -Param1 Toto -Param2 Titi -Param3 Tutu
-	What you write to run the script with the parameters
-	Result : for exemple a file, a modification, a error message
-	
-.EXAMPLE
-	.\CanevasV3.ps1
-	Result : Display help when no parameter are present
+	TODO
 	
 .LINK
-    When other scripts are used in this script
+    TODO
 #>
 
 <# The number of parameters must be the same as described in the header
@@ -52,11 +42,9 @@
 param($Param1, $Param2, $Param3)
 
 ###################################################################################################################
-# Area for the variables and functions with exemples
-# Comments for variables
+# Variables
+$header = "LOG DATE: "
 $date= Get-Date
-$count= 0
-$path= "c:\temp"
 
 ###################################################################################################################
 # Area for the tests, for exemple admin rignts, existing path or the presence of parameters
@@ -73,7 +61,3 @@ if(!$Param1 -or !$Param2 -or !$Param3)
 
 # What does the script, in this case display a message
 Write-Host "coucou"
-    
-
-
-
