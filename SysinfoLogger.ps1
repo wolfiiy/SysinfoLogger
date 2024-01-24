@@ -7,6 +7,10 @@
     Date: January 24th, 2024
     *****************************************************************************
 
+    IDEAS
+    - Custom save location
+    - IPs from file
+
 .SYNOPSIS
     Logging system data
 
@@ -43,21 +47,42 @@ param($Param1, $Param2, $Param3)
 
 ###################################################################################################################
 # Variables
-$header = "LOG DATE: "
-$date= Get-Date
+$Header = "LOG DATE: "
+$Date = ""
+$FilePath = "sysinfo.log"
+
+
+$Name
+$OSVersion
 
 ###################################################################################################################
-# Area for the tests, for exemple admin rignts, existing path or the presence of parameters
+# Tests
 
 # Display help if at least one parameter is missing and exit, "safe guard clauses" allowed to optimize scripts running and reading
-if(!$Param1 -or !$Param2 -or !$Param3)
+<#if(!$Param1 -or !$Param2 -or !$Param3)
 {
     Get-Help $MyInvocation.Mycommand.Path
 	exit
-}
+}#>
 
 ###################################################################################################################
-# Body's script
+# Body
 
-# What does the script, in this case display a message
-Write-Host "coucou"
+$Name = (Get-CimInstance CIM_ComputerSystem).Name
+$OSVersion = (Get-CimInstance -ClassName CIM_OperatingSystem).Caption
+
+
+function Write-Data() {
+    # Date and header
+    $Name | Tee-Object -FilePath $FilePath -Append
+
+    $date = Get-Date -Format "yyyy/MM/dd"
+    Write-Host -ForegroundColor Yellow $Header $Date
+}
+
+# Appends the gathered data to the logging file.
+function Write-To-File() {
+    
+}
+
+Write-Data
