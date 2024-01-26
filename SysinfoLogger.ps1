@@ -111,6 +111,11 @@ function Write-To-File() {
     Write-Output "Version: `t$OSVersion Build $OSBuild" >> $FilePath
     Write-Output "CPU `t`t$CPU" >> $FilePath
     # TODO store in variable
+    $i = 0
+    foreach($VGA in $GPU) {
+        Write-Output "GPU $i`: `t`t$VGA" >> $FilePath
+        $i++
+    }
     foreach($Disk in $LDisks){
         $DiskName = $Disk.DeviceID
         $DiskSize = [math]::Round($Disk.Size / 1gb)
