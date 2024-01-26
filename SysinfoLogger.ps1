@@ -10,6 +10,7 @@
     IDEAS
     - Custom save location
     - IPs from files test
+    - Check for package managers
 
 .SYNOPSIS
     Logging system data
