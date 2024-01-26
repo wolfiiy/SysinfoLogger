@@ -51,10 +51,6 @@ $Header = "LOG DATE: "
 $Date = ""
 $FilePath = "sysinfo.log"
 
-
-$Name
-$OSVersion
-
 ###################################################################################################################
 # Tests
 
@@ -68,16 +64,28 @@ $OSVersion
 ###################################################################################################################
 # Body
 
-$Name = (Get-CimInstance CIM_ComputerSystem).Name
-$OSVersion = (Get-CimInstance -ClassName CIM_OperatingSystem).Caption
+$date = Get-Date -Format "`tyyyy/MM/dd"
+$Hostname = (Get-CimInstance CIM_ComputerSystem).Name
+$OS = (Get-CimInstance -ClassName CIM_OperatingSystem).Caption
+
+$CPU = (Get-CimInstance -ClassName CIM_Processor).Name
 
 
 function Write-Data() {
     # Date and header
-    $Name | Tee-Object -FilePath $FilePath -Append
+    # $Name | Tee-Object -FilePath $FilePath -Append
 
-    $date = Get-Date -Format "yyyy/MM/dd"
+    clear
     Write-Host -ForegroundColor Yellow $Header $Date
+    Write-Host Hostname: `t$Hostname
+    Write-Host OS: `t`t$OS
+    Write-Host CPU `t`t$CPU
+    $GPU = (Get-CimInstance -ClassName CIM_VideoController).Name
+    $i = 0
+    foreach($VGA in $GPU) {
+        Write-Host GPU $i : `t$VGA
+        $i++
+    }
 }
 
 # Appends the gathered data to the logging file.
