@@ -64,33 +64,41 @@ $FilePath = "sysinfo.log"
 ###################################################################################################################
 # Body
 
-$date = Get-Date -Format "`tyyyy/MM/dd"
+$date = Get-Date -Format "yyyy/MM/dd HH:mm"
 $Hostname = (Get-CimInstance CIM_ComputerSystem).Name
-$OS = (Get-CimInstance -ClassName CIM_OperatingSystem).Caption
+
+$OS = (Get-CimInstance -ClassName CIM_OperatingSystem)
+$OSName = $OS.Caption
+$OSVersion = $OS.Version
+$OSBuild = $OS.BuildNumber
 
 $CPU = (Get-CimInstance -ClassName CIM_Processor).Name
 
 
 function Write-Data() {
-    # Date and header
-    # $Name | Tee-Object -FilePath $FilePath -Append
-
     clear
     Write-Host -ForegroundColor Yellow $Header $Date
     Write-Host Hostname: `t$Hostname
-    Write-Host OS: `t`t$OS
+    Write-Host OS: `t`t$OSName
+    Write-Host Version: `t$OSVersion Build $OSBuild
     Write-Host CPU `t`t$CPU
     $GPU = (Get-CimInstance -ClassName CIM_VideoController).Name
+    
     $i = 0
     foreach($VGA in $GPU) {
-        Write-Host GPU $i : `t$VGA
+        Write-Host GPU $i`: `t`t$VGA
         $i++
     }
 }
 
 # Appends the gathered data to the logging file.
 function Write-To-File() {
-    
+    Write-Output "`n********** LOG DATE $date **********" >> $FilePath
+    Write-Output "Hostname: `t$Hostname" >> $FilePath
+    Write-Output "OS: `t`t$OSName" >> $FilePath
+    Write-Output "Version: `t$OSVersion Build $OSBuild" >> $FilePath
+    Write-Output "CPU `t`t$CPU" >> $FilePath
 }
 
 Write-Data
+Write-To-File
