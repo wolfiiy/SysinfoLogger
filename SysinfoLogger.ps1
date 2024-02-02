@@ -77,6 +77,7 @@ $CPU = (Get-CimInstance -ClassName CIM_Processor).Name
 $GPU = (Get-CimInstance -ClassName CIM_VideoController).Name
 $LDisks = Get-CimInstance -ClassName CIM_LogicalDisk
 
+$LMonitors = Get-CimInstance -ClassName CIM_DesktopMonitor
 
 function Write-Data() {
     clear
@@ -102,6 +103,14 @@ function Write-Data() {
             Write-Host $DiskName `t`t$DiskFree / $DiskSize Gb`, $DiskFreePercent% free
         }
     }
+	
+	foreach ($Monitor in $LMonitors) {
+		$MonitorName = $Monitor.Name
+		[string]$w = $Monitor.ScreenWidth
+		[string]$h = $Monitor.ScreenHeight
+		$MonitorResolution = $w + "x" + $h
+		Write-Host $MonitorName`: $MonitorResolution
+	}
 }
 
 # Appends the gathered data to the logging file.
