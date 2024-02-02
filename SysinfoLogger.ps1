@@ -66,6 +66,15 @@ $FilePath = "sysinfo.log"
 # Body
 
 $date = Get-Date -Format "yyyy/MM/dd HH:mm:ss"
+
+$Title = @"
+╔═══════════════════════════════════════════════════════════════════════════════╗
+║                               SYSTEM INFO LOGGER                              ║
+╟═══════════════════════════════════════════════════════════════════════════════╣
+║ Log date: ${Date}                                                 ║
+╙━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╜
+"@
+
 $Hostname = (Get-CimInstance CIM_ComputerSystem).Name
 
 $OS = (Get-CimInstance -ClassName CIM_OperatingSystem)
@@ -79,19 +88,36 @@ $LDisks = Get-CimInstance -ClassName CIM_LogicalDisk
 
 $LMonitors = Get-CimInstance -ClassName CIM_DesktopMonitor
 
-function Write-Data() {
+$InstalledSoftware = Get-Itemproperty HKLM:\Software\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\*, 
+HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\* | Where-Object {!([string]:: IsNullOrWhiteSpace($_.DisplayName))} | Select DisplayName
+
+
+function Write-Title() {
     clear
-    Write-Host -ForegroundColor Yellow $Header $Date
+    Write-Host -ForegroundColor Cyan $Title
+}
+
+
+function Write-Data() {
     Write-Host Hostname: `t$Hostname
     Write-Host OS: `t`t$OSName
     Write-Host Version: `t$OSVersion Build $OSBuild
     
     Write-Host CPU `t`t$CPU
+    
     $i = 0
+    Write-Host `n
     foreach($VGA in $GPU) {
         Write-Host GPU $i`: `t`t$VGA
         $i++
     }
+	foreach ($Monitor in $LMonitors) {
+		$MonitorName = $Monitor.Name
+		[string]$w = $Monitor.ScreenWidth
+		[string]$h = $Monitor.ScreenHeight
+		$MonitorResolution = $w + "x" + $h
+		Write-Host $MonitorName`: $MonitorResolution
+	}
 
     foreach($Disk in $LDisks){
         $DiskName = $Disk.DeviceID
@@ -103,14 +129,9 @@ function Write-Data() {
             Write-Host $DiskName `t`t$DiskFree / $DiskSize Gb`, $DiskFreePercent% free
         }
     }
-	
-	foreach ($Monitor in $LMonitors) {
-		$MonitorName = $Monitor.Name
-		[string]$w = $Monitor.ScreenWidth
-		[string]$h = $Monitor.ScreenHeight
-		$MonitorResolution = $w + "x" + $h
-		Write-Host $MonitorName`: $MonitorResolution
-	}
+
+    Write-Host `nInstalled software:
+    $InstalledSoftware.DisplayName
 }
 
 # Appends the gathered data to the logging file.
@@ -138,5 +159,6 @@ function Write-To-File() {
     }
 }
 
+Write-Title
 Write-Data
 Write-To-File
