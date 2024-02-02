@@ -81,6 +81,8 @@ $OSName = $OS.Caption
 $OSVersion = $OS.Version
 $OSBuild = $OS.BuildNumber
 
+$RAMFree = [math]::Round((Get-CimInstance Cim_OperatingSystem).FreePhysicalMemory/1mb)
+$RAM = [math]::Round((Get-CimInstance Cim_OperatingSystem).TotalVisibleMemorySize/1mb)
 $CPU = (Get-CimInstance -ClassName CIM_Processor).Name
 $GPU = (Get-CimInstance -ClassName CIM_VideoController).Name
 $LDisks = Get-CimInstance -ClassName CIM_LogicalDisk
@@ -110,7 +112,7 @@ function Write-Data() {
         Write-Host `| GPU $i`: `t`t$VGA
         $i++
     }
-    Write-Host └ RAM: Todo
+    Write-Host └ RAM: $RAMFree / $RAM Gb
 
     Write-Host `n
     Write-Host ┌ DISPLAYS
