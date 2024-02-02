@@ -76,7 +76,6 @@ $Title = @"
 "@
 
 $Hostname = (Get-CimInstance CIM_ComputerSystem).Name
-
 $OS = (Get-CimInstance -ClassName CIM_OperatingSystem)
 $OSName = $OS.Caption
 $OSVersion = $OS.Version
@@ -97,28 +96,35 @@ function Write-Title() {
     Write-Host -ForegroundColor Cyan $Title
 }
 
-
+# └
 function Write-Data() {
-    Write-Host Hostname: `t$Hostname
-    Write-Host OS: `t`t$OSName
-    Write-Host Version: `t$OSVersion Build $OSBuild
-    
-    Write-Host CPU `t`t$CPU
-    
     $i = 0
+
     Write-Host `n
+    Write-Host ┌ SYSTEM INFORMATIONS
+    Write-Host `| Hostname: `t$Hostname
+    Write-Host `| OS: `t`t$OSName
+    Write-Host `| Version: `t$OSVersion Build $OSBuild
+    Write-Host `| CPU: `t`t$CPU
     foreach($VGA in $GPU) {
-        Write-Host GPU $i`: `t`t$VGA
+        Write-Host `| GPU $i`: `t`t$VGA
         $i++
     }
+    Write-Host └ RAM: Todo
+
+    Write-Host `n
+    Write-Host ┌ DISPLAYS
 	foreach ($Monitor in $LMonitors) {
 		$MonitorName = $Monitor.Name
 		[string]$w = $Monitor.ScreenWidth
 		[string]$h = $Monitor.ScreenHeight
 		$MonitorResolution = $w + "x" + $h
-		Write-Host $MonitorName`: $MonitorResolution
+		Write-Host `| $MonitorName`: $MonitorResolution
 	}
+    Write-Host └ $LMonitors.DeviceID.Count display`(s`) in total
 
+    Write-Host `n
+    Write-Host ┌ STORAGE
     foreach($Disk in $LDisks){
         $DiskName = $Disk.DeviceID
         $DiskSize = [math]::Round($Disk.Size / 1gb)
@@ -126,12 +132,17 @@ function Write-Data() {
 
         if ($DiskSize -gt 0) {
             $DiskFreePercent = [math]::Round($DiskFree / $DiskSize * 100, 2)
-            Write-Host $DiskName `t`t$DiskFree / $DiskSize Gb`, $DiskFreePercent% free
+            Write-Host `| $DiskName `t`t$DiskFree / $DiskSize Gb`, $DiskFreePercent% free
         }
     }
+    Write-Host └ Found $LDisks.DeviceID.Count parition`(s`)
 
-    Write-Host `nInstalled software:
-    $InstalledSoftware.DisplayName
+    Write-Host `n
+    Write-Host ┌ SOFTWARE
+    foreach ($Software in $InstalledSoftware) {
+        Write-Host `| $Software.DisplayName
+    }
+    Write-Host └ $InstalledSoftware.DisplayName.Count Program`(s`) or update`(s`) installed
 }
 
 # Appends the gathered data to the logging file.
