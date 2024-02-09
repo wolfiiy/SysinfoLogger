@@ -96,14 +96,13 @@ HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\* | Where-Object {!([s
 function Write-Title() {
     clear
     Write-Host -ForegroundColor Cyan $Title
-    Write-Output `n`n$Title >> $FilePath
+    Write-Output $Title >> $FilePath
 }
 
 function Write-All() {
     $i = 0
 
-    Write-Output "`n" | Tee-Object -file $FilePath -Append
-    Write-Output "┌ SYSTEM INFORMATIONS" | Tee-Object -file $FilePath -Append
+    Write-Output "`n┌ SYSTEM INFORMATIONS" | Tee-Object -file $FilePath -Append
     Write-Output "`| Hostname: `t$Hostname" | Tee-Object -file $FilePath -Append
     Write-Output "`| OS: `t`t$OSName" | Tee-Object -file $FilePath -Append
     Write-Output "`| Version: `t$OSVersion Build $OSBuild" | Tee-Object -file $FilePath -Append
@@ -114,8 +113,7 @@ function Write-All() {
     }
     Write-Output "└ RAM: $RAMFree / $RAM Gb" | Tee-Object -file $FilePath -Append
 
-    Write-Output "`n" | Tee-Object -file $FilePath -Append
-    Write-Output "┌ DISPLAYS" | Tee-Object -file $FilePath -Append
+    Write-Output "`n┌ DISPLAYS" | Tee-Object -file $FilePath -Append
 	foreach ($Monitor in $LMonitors) {
 		$MonitorName = $Monitor.Name
 		[string]$w = $Monitor.ScreenWidth
@@ -125,8 +123,7 @@ function Write-All() {
 	}
     Write-Output "└ $($LMonitors.DeviceID.Count) display`(s`) in total" | Tee-Object -file $FilePath -Append
 
-    Write-Output "`n" | Tee-Object -file $FilePath -Append
-    Write-Output "┌ STORAGE" | Tee-Object -file $FilePath -Append
+    Write-Output "`n┌ STORAGE" | Tee-Object -file $FilePath -Append
     foreach($Disk in $LDisks){
         $DiskName = $Disk.DeviceID
         $DiskSize = [math]::Round($Disk.Size / 1gb)
@@ -139,12 +136,11 @@ function Write-All() {
     }
     Write-Output "└ Found $($LDisks.DeviceID.Count) parition`(s`)" | Tee-Object -file $FilePath -Append
 
-    Write-Output "`n" | Tee-Object -file $FilePath -Append
-    Write-Output "┌ SOFTWARE" | Tee-Object -file $FilePath -Append
+    Write-Output "`n┌ SOFTWARE" | Tee-Object -file $FilePath -Append
     foreach ($Software in $InstalledSoftware) {
         Write-Output "`| $($Software.DisplayName)" | Tee-Object -file $FilePath -Append
     }
-    Write-Output "└ $($InstalledSoftware.DisplayName.Count) Program`(s`) or update`(s`) installed" | Tee-Object -file $FilePath -Append
+    Write-Output "└ $($InstalledSoftware.DisplayName.Count) Program`(s`) or update`(s`) installed`n`n" | Tee-Object -file $FilePath -Append
 }
 
 Write-Title
