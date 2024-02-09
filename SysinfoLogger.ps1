@@ -80,8 +80,8 @@ $OSName = $OS.Caption
 $OSVersion = $OS.Version
 $OSBuild = $OS.BuildNumber
 
-$RAMFree = [math]::Round((Get-CimInstance Cim_OperatingSystem).FreePhysicalMemory/1mb)
-$RAM = [math]::Round((Get-CimInstance Cim_OperatingSystem).TotalVisibleMemorySize/1mb)
+$RAMFree = [math]::Round((Get-CimInstance Cim_OperatingSystem).FreePhysicalMemory/1mb, 2)
+$RAM = [math]::Round((Get-CimInstance Cim_OperatingSystem).TotalVisibleMemorySize/1mb, 2)
 $CPU = (Get-CimInstance -ClassName CIM_Processor).Name
 $GPU = (Get-CimInstance -ClassName CIM_VideoController).Name
 $LDisks = Get-CimInstance -ClassName CIM_LogicalDisk
@@ -110,7 +110,7 @@ function Write-All() {
         Write-Output "`| GPU $i`: `t`t$VGA" | Tee-Object -file  -Append$FilePath -Append
         $i++
     }
-    Write-Output "└ RAM: $RAMFree / $RAM Gb" | Tee-Object -file $FilePath -Append
+    Write-Output "└ RAM: `t`t$RAMFree / $RAM Gb" | Tee-Object -file $FilePath -Append
 
     Write-Output "`n┌ DISPLAYS" | Tee-Object -file $FilePath -Append
 	foreach ($Monitor in $LMonitors) {
@@ -125,8 +125,8 @@ function Write-All() {
     Write-Output "`n┌ STORAGE" | Tee-Object -file $FilePath -Append
     foreach($Disk in $LDisks){
         $DiskName = $Disk.DeviceID
-        $DiskSize = [math]::Round($Disk.Size / 1gb)
-        $DiskFree = [math]::Round($Disk.FreeSpace / 1gb)
+        $DiskSize = [math]::Round($Disk.Size / 1gb, 2)
+        $DiskFree = [math]::Round($Disk.FreeSpace / 1gb, 2)
 
         if ($DiskSize -gt 0) {
             $DiskFreePercent = [math]::Round($DiskFree / $DiskSize * 100, 2)
