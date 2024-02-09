@@ -1,4 +1,4 @@
-<#
+﻿<#
 .NOTES
     *****************************************************************************
     ETML
@@ -96,6 +96,55 @@ HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\* | Where-Object {!([s
 function Write-Title() {
     clear
     Write-Host -ForegroundColor Cyan $Title
+    Write-Output `n`n$Title >> $FilePath
+}
+
+function Write-All() {
+    $i = 0
+
+    Write-Output "`n" | Tee-Object -file $FilePath -Append
+    Write-Output "┌ SYSTEM INFORMATIONS" | Tee-Object -file $FilePath -Append
+    Write-Output "`| Hostname: `t$Hostname" | Tee-Object -file $FilePath -Append
+    Write-Output "`| OS: `t`t$OSName" | Tee-Object -file $FilePath -Append
+    Write-Output "`| Version: `t$OSVersion Build $OSBuild" | Tee-Object -file $FilePath -Append
+    Write-Output "`| CPU: `t`t$CPU" | Tee-Object -file $FilePath -Append
+    foreach($VGA in $GPU) {
+        Write-Output "`| GPU $i`: `t`t$VGA" | Tee-Object -file  -Append$FilePath -Append
+        $i++
+    }
+    Write-Output "└ RAM: $RAMFree / $RAM Gb" | Tee-Object -file $FilePath -Append
+
+    Write-Output "`n" | Tee-Object -file $FilePath -Append
+    Write-Output "┌ DISPLAYS" | Tee-Object -file $FilePath -Append
+	foreach ($Monitor in $LMonitors) {
+		$MonitorName = $Monitor.Name
+		[string]$w = $Monitor.ScreenWidth
+		[string]$h = $Monitor.ScreenHeight
+		$MonitorResolution = $w + "x" + $h
+		Write-Output "`| $MonitorName`: $MonitorResolution" | Tee-Object -file $FilePath -Append
+	}
+    Write-Output "└ $($LMonitors.DeviceID.Count) display`(s`) in total" | Tee-Object -file $FilePath -Append
+
+    Write-Output "`n" | Tee-Object -file $FilePath -Append
+    Write-Output "┌ STORAGE" | Tee-Object -file $FilePath -Append
+    foreach($Disk in $LDisks){
+        $DiskName = $Disk.DeviceID
+        $DiskSize = [math]::Round($Disk.Size / 1gb)
+        $DiskFree = [math]::Round($Disk.FreeSpace / 1gb)
+
+        if ($DiskSize -gt 0) {
+            $DiskFreePercent = [math]::Round($DiskFree / $DiskSize * 100, 2)
+            Write-Output "`| $DiskName `t`t$DiskFree / $DiskSize Gb`, $DiskFreePercent% free" | Tee-Object -file $FilePath -Append
+        }
+    }
+    Write-Output "└ Found $($LDisks.DeviceID.Count) parition`(s`)" | Tee-Object -file $FilePath -Append
+
+    Write-Output "`n" | Tee-Object -file $FilePath -Append
+    Write-Output "┌ SOFTWARE" | Tee-Object -file $FilePath -Append
+    foreach ($Software in $InstalledSoftware) {
+        Write-Output "`| $($Software.DisplayName)" | Tee-Object -file $FilePath -Append
+    }
+    Write-Output "└ $($InstalledSoftware.DisplayName.Count) Program`(s`) or update`(s`) installed" | Tee-Object -file $FilePath -Append
 }
 
 # └
@@ -149,17 +198,33 @@ function Write-Data() {
 
 # Appends the gathered data to the logging file.
 function Write-To-File() {
-    Write-Output "`n********** LOG DATE $date **********" >> $FilePath
-    Write-Output "Hostname: `t$Hostname" >> $FilePath
-    Write-Output "OS: `t`t$OSName" >> $FilePath
-    Write-Output "Version: `t$OSVersion Build $OSBuild" >> $FilePath
-    Write-Output "CPU `t`t$CPU" >> $FilePath
-    # TODO store in variable
     $i = 0
+
+    Write-Host `n
+    Write-Host ┌ SYSTEM INFORMATIONS
+    Write-Host `| Hostname: `t$Hostname
+    Write-Host `| OS: `t`t$OSName
+    Write-Host `| Version: `t$OSVersion Build $OSBuild
+    Write-Host `| CPU: `t`t$CPU
     foreach($VGA in $GPU) {
-        Write-Output "GPU $i`: `t`t$VGA" >> $FilePath
+        Write-Host `| GPU $i`: `t`t$VGA
         $i++
     }
+    Write-Host └ RAM: $RAMFree / $RAM Gb
+
+    Write-Host `n
+    Write-Host ┌ DISPLAYS
+	foreach ($Monitor in $LMonitors) {
+		$MonitorName = $Monitor.Name
+		[string]$w = $Monitor.ScreenWidth
+		[string]$h = $Monitor.ScreenHeight
+		$MonitorResolution = $w + "x" + $h
+		Write-Host `| $MonitorName`: $MonitorResolution
+	}
+    Write-Host └ $LMonitors.DeviceID.Count display`(s`) in total
+
+    Write-Host `n
+    Write-Host ┌ STORAGE
     foreach($Disk in $LDisks){
         $DiskName = $Disk.DeviceID
         $DiskSize = [math]::Round($Disk.Size / 1gb)
@@ -167,11 +232,20 @@ function Write-To-File() {
 
         if ($DiskSize -gt 0) {
             $DiskFreePercent = [math]::Round($DiskFree / $DiskSize * 100, 2)
-            Write-Output "$DiskName `t`t$DiskFree / $DiskSize Gb`, $DiskFreePercent% free" >> $FilePath
+            Write-Host `| $DiskName `t`t$DiskFree / $DiskSize Gb`, $DiskFreePercent% free
         }
     }
+    Write-Host └ Found $LDisks.DeviceID.Count parition`(s`)
+
+    Write-Host `n
+    Write-Host ┌ SOFTWARE
+    foreach ($Software in $InstalledSoftware) {
+        Write-Host `| $Software.DisplayName
+    }
+    Write-Host └ $InstalledSoftware.DisplayName.Count Program`(s`) or update`(s`) installed
 }
 
 Write-Title
-Write-Data
-Write-To-File
+# Write-Data
+# Write-To-File
+Write-All
