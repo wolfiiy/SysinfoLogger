@@ -1,4 +1,4 @@
-<#
+﻿<#
 .NOTES
     *****************************************************************************
     ETML
@@ -56,10 +56,9 @@ $Title = @"
 
 # Data logger
 function Get-SystemInformation {
-    param([string]$ComputerName)
+    param([string]$ComputerName, [bool]$IsLocal)
 
-    # Sending command to remote computers
-    $SysInfo = Invoke-Command -ComputerName $ComputerName -ScriptBlock {
+    $Data = {
         # Computer and OS
         $Hostname = (Get-CimInstance CIM_ComputerSystem).Name
         $IPAddress = (Get-NetIPAddress | Where-Object {$_.AddressFamily -eq 'IPv4'}).IPAddress
@@ -99,6 +98,13 @@ function Get-SystemInformation {
         return $info
     }
 
+    if ($IsLocal) {
+        $SysInfo = & $Data
+    } else {
+        # Sending command to remote computers
+        $SysInfo = Invoke-Command -ComputerName $ComputerName -ScriptBlock $Data
+    }
+    
     # Counter
     $i = 0
 
@@ -152,7 +158,7 @@ if ($Remote -gt 0) {
     foreach ($PC in $Remote) {
         try {
             New-PSSession -ComputerName $PC -Credential Get-Credential
-            Get-SystemInformation -ComputerName $PC
+            Get-SystemInformation -ComputerName $PC -IsLocal $false
             # Remove-PSSession
         } catch {
             Write-Error "Logging for $PC failed." 
@@ -161,5 +167,5 @@ if ($Remote -gt 0) {
     }
 } else {
     # Log this computer
-    Get-SystemInformation $env:COMPUTERNAME
+    Get-SystemInformation -ComputerName $env:COMPUTERNAME -IsLocal $true
 }
