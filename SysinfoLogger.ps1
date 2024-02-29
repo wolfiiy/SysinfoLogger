@@ -32,19 +32,10 @@
 	
 .EXAMPLE
 	TODO
-	
-.LINK
-    TODO
 #>
 
-<# The number of parameters must be the same as described in the header
-   It's possible to have no parameter but arguments
-   One parameter can be typed : [string]$Param1
-   One parameter can be initialized : $Param2="Toto"
-   One parameter can be required : [Parameter(Mandatory=$True][string]$Param3
-#>
 # The parameters are defined right after the header and a comment must be added 
-param($Param1, $Param2, $Param3)
+param($RemoteIP)
 
 ###################################################################################################################
 # Variables
@@ -53,13 +44,6 @@ $FilePath = "sysinfo.log"
 
 ###################################################################################################################
 # Tests
-
-# Display help if at least one parameter is missing and exit, "safe guard clauses" allowed to optimize scripts running and reading
-<#if(!$Param1 -or !$Param2 -or !$Param3)
-{
-    Get-Help $MyInvocation.Mycommand.Path
-	exit
-}#>
 
 ###################################################################################################################
 # Body
