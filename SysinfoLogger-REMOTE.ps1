@@ -8,7 +8,6 @@
     *****************************************************************************
 
     IDEAS
-    - Custom save location
     - IPs from files test
     - Check for package managers
 
@@ -27,6 +26,9 @@
 .PARAMETER Remote
     IP address of a remote computer.
 
+.PARAMETER Path
+    Existing folder in which to save the log file. Do *not* include the file name.
+
 .OUTPUTS
     The script logs the gathered data inside of the sysinfo.log file.
 	
@@ -34,12 +36,24 @@
 	TODO
 #>
 # The parameters are defined right after the header and a comment must be added 
-param($Remote)
+param($Remote, $Path)
 
 ###################################################################################################################
 # Variables
 $Date = ""
 $FilePath = "sysinfo.log"
+
+###################################################################################################################
+# Checks
+
+# Path is valid
+if ($Path.Length -gt 0) {
+    if (!(Test-Path -Path $Path)) {
+        throw [System.ArgumentException]::new("Save path is invalid! Please use an existing directory.")
+    }
+
+    $FilePath = $Path + "\sysinfo.log"
+}
 
 ###################################################################################################################
 # Body
