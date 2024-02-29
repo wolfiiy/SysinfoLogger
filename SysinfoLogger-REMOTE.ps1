@@ -173,7 +173,7 @@ function Get-SystemInformation {
     Write-Output "`| Uptime: `t$($SysInfo['Uptime'])" | Tee-Object -file $FilePath -Append
     Write-Output "`| CPU: `t`t$($SysInfo['CPU'])" | Tee-Object -file $FilePath -Append
     foreach($VGA in $($SysInfo['GPU'])) {
-        Write-Output "`| GPU $i`: `t$VGA" | Tee-Object -file  -Append $FilePath -Append
+        Write-Output "`| GPU $i`: `t$VGA" | Tee-Object -file $FilePath -Append
         $i++
     }
     Write-Output "└ RAM: `t`t$($SysInfo['RAMFree']) / $($SysInfo['RAM']) Gb" | Tee-Object -file $FilePath -Append
