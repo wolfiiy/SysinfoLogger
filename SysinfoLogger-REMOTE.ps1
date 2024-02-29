@@ -5,23 +5,25 @@
     Script name: Sysinfo Logger
     Author: Valentin PIGNAT, Sebastien TILLE
     Date: February 29th, 2024
+    Url: https://github.com/wolfiiy/SysinfoLogger
     *****************************************************************************
 
-    IDEAS
-    - IPs from files test
-    - Check for package managers
-
 .SYNOPSIS
-    Logging system data
+    System information logging
 
 .DESCRIPTION
-    This script gets and logs system information. Data collected:
+    This script allows for easy system information logging. It can be used on the
+    local computer or other Windows computer on the same network. The collected 
+    data is written to a sysinfo.log file.
+
+    Collected information (in order):
     - Hostname
-    - OS version
-    - Disk usage
+    - OS, version and build number
+    - CPU, GPU
+    - Connected displays
     - Memory usage
-    - Software installed
-    - TODO
+    - Disk usage
+    - Programms installed
 
 .PARAMETER Remote
     IP addresses of remote computers. Separate using a comma.
@@ -33,7 +35,40 @@
     The script logs the gathered data inside of the sysinfo.log file.
 	
 .EXAMPLE
-	TODO
+	.\SysinfoLogger.ps1
+    Result: TODO change result
+    ╔═══════════════════════════════════════════════════════════════════════════════╗
+    ║                               SYSTEM INFO LOGGER                              ║
+    ╟═══════════════════════════════════════════════════════════════════════════════╣
+    ║ Log date: 2024.02.29 19:45:46                                                 ║
+    ╙━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╜
+
+    ┌ SYSTEM INFORMATIONS
+    | Hostname:     VM-ICT122
+    | OS:           Microsoft Windows 11 Professionnel
+    | Version:      10.0.22631 Build 22631
+    | CPU:          AMD Ryzen 7 7800X3D 8-Core Processor
+    | GPU 0:                VirtualBox Graphics Adapter (WDDM)
+    └ RAM:          4.55 / 7.99 Gb
+
+    ┌ DISPLAYS
+    | Moniteur non Plug-and-Play générique: x
+    └ 1 display(s) in total
+
+    ┌ STORAGE
+    | C:            26.93 / 49.12 Gb, 54.82% free
+    | D:            0 / 0.06 Gb, 0% free
+    └ Found 2 parition(s)
+
+    ┌ SOFTWARE
+    | Microsoft Edge
+    | Microsoft Edge Update
+    | Microsoft Edge WebView2 Runtime
+    | CIM Explorer
+    | Git
+    | Oracle VM VirtualBox Guest Additions 6.1.38
+    | Microsoft Visual Studio Code
+    └ 7 Program(s) or update(s) installed
 #>
 
 ###################################################################################################################
@@ -85,6 +120,7 @@ function Get-SystemInformation {
         $OSName = $OS.Caption
         $OSVersion = $OS.Version
         $OSBuild = $OS.BuildNumber
+        $Uptime = New-TimeSpan -Start $OS.LastBootUpTime -End $Date
 
         # Hardware and displays
         $RAMFree = [math]::Round((Get-CimInstance Cim_OperatingSystem).FreePhysicalMemory/1mb, 2)
@@ -112,6 +148,7 @@ function Get-SystemInformation {
             "LMonitors" = $LMonitors
             "InstalledSoftware" = $InstalledSoftware
             "IPAddress" = $IPAddress
+            "Uptime" = $Uptime
         }
 
         return $info
@@ -133,9 +170,10 @@ function Get-SystemInformation {
     Write-Output "`| Hostname: `t$($SysInfo['Hostname'])" | Tee-Object -file $FilePath -Append
     Write-Output "`| OS: `t`t$($SysInfo['OSName'])" | Tee-Object -file $FilePath -Append
     Write-Output "`| Version: `t$($SysInfo['OSVersion']) Build $($SysInfo['OSBuild'])" | Tee-Object -file $FilePath -Append
+    Write-Output "`| Uptime: `t$($SysInfo['Uptime'])" | Tee-Object -file $FilePath -Append
     Write-Output "`| CPU: `t`t$($SysInfo['CPU'])" | Tee-Object -file $FilePath -Append
     foreach($VGA in $($SysInfo['GPU'])) {
-        Write-Output "`| GPU $i`: `t`t$VGA" | Tee-Object -file  -Append$FilePath -Append
+        Write-Output "`| GPU $i`: `t$VGA" | Tee-Object -file  -Append$FilePath -Append
         $i++
     }
     Write-Output "└ RAM: `t`t$($SysInfo['RAMFree']) / $($SysInfo['RAM']) Gb" | Tee-Object -file $FilePath -Append
