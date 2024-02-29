@@ -196,7 +196,7 @@ function Get-SystemInformation {
         $DiskName = $Disk.DeviceID
         $DiskSize = [math]::Round($Disk.Size / 1gb, 2)
         $DiskFree = [math]::Round($Disk.FreeSpace / 1gb, 2)
-        $DiskUsed = [math]::Round($DiskSize - $DiskFree)
+        $DiskUsed = [math]::Round($DiskSize - $DiskFree, 2)
 
         $EmptyDisk = 0
         if ($DiskSize -gt 0) {
