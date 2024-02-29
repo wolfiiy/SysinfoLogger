@@ -24,7 +24,7 @@
     - TODO
 
 .PARAMETER Remote
-    IP address of a remote computer.
+    IP addresses of remote computers. Separate using a comma.
 
 .PARAMETER Path
     Existing folder in which to save the log file. Do *not* include the file name.
@@ -35,8 +35,13 @@
 .EXAMPLE
 	TODO
 #>
-# The parameters are defined right after the header and a comment must be added 
-param($Remote, $Path)
+
+###################################################################################################################
+# Parameters
+param(
+    [string[]]$Remote=@(), 
+    [string]$Path
+)
 
 ###################################################################################################################
 # Variables
@@ -123,6 +128,7 @@ function Get-SystemInformation {
     $i = 0
 
     # Computer and OS
+    Write-Output $Title | Tee-Object -file $FilePath -Append
     Write-Output "`n┌ SYSTEM INFORMATIONS" | Tee-Object -file $FilePath -Append
     Write-Output "`| Hostname: `t$($SysInfo['Hostname'])" | Tee-Object -file $FilePath -Append
     Write-Output "`| OS: `t`t$($SysInfo['OSName'])" | Tee-Object -file $FilePath -Append
