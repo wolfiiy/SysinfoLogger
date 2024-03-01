@@ -122,6 +122,15 @@ function Get-SystemInformation {
         $OSVersion = $OS.Version
         $OSBuild = $OS.BuildNumber
         $Uptime = New-TimeSpan -Start $OS.LastBootUpTime -End $Date
+        $PkgWinget = (Get-Command winget -ErrorAction SilentlyContinue).Name
+        $PkgChoco = (Get-Command choco -ErrorAction SilentlyContinue).Name
+        $PkgScoop = (Get-Command scoop -ErrorAction SilentlyContinue).Name
+        $PkgManagers = @{
+            "Winget" = $PkgWinget
+            "Choco" = $PkgChoco
+            "Scoop" = $PkgScoop
+        }
+        $PkgManagers = "$PkgWinget $PkgChoco $PkgScoop"
 
         # Hardware and displays
         $RAMFree = [math]::Round((Get-CimInstance Cim_OperatingSystem).FreePhysicalMemory/1mb, 2)
@@ -150,6 +159,7 @@ function Get-SystemInformation {
             "InstalledSoftware" = $InstalledSoftware
             "IPAddress" = $IPAddress
             "Uptime" = $Uptime
+            "PkgManagers" = $PkgManagers
         }
 
         return $info
@@ -167,12 +177,25 @@ function Get-SystemInformation {
 
     # Computer and OS
     Write-Output $Title | Tee-Object -file $FilePath -Append
-    Write-Output "`n┌ SYSTEM INFORMATIONS" | Tee-Object -file $FilePath -Append
+    Write-Output "`n┌ OPERATING SYSTEM" | Tee-Object -file $FilePath -Append
     Write-Output "`| Hostname: `t$($SysInfo['Hostname'])" | Tee-Object -file $FilePath -Append
     Write-Output "`| IP: `t`t$($SysInfo['IPAddress'])" | Tee-Object -file $FilePath -Append
     Write-Output "`| OS: `t`t$($SysInfo['OSName'])" | Tee-Object -file $FilePath -Append
     Write-Output "`| Version: `t$($SysInfo['OSVersion']) Build $($SysInfo['OSBuild'])" | Tee-Object -file $FilePath -Append
-    Write-Output "`| Uptime: `t$($SysInfo['Uptime'])" | Tee-Object -file $FilePath -Append
+
+    $InstalledPacman = ""
+    $Pacman = $($SysInfo['PkgManagers'])
+    foreach ($P in $Pacman.Keys) {
+        $InstalledPacman += "$($Pacman.$P) "
+    }
+    $InstalledPacman = $($SysInfo['PkgManagers'])
+    if ($InstalledPacman.Length -gt 0) {
+        Write-Output "`| Packages: `t$InstalledPacman" | Tee-Object -file $FilePath -Append
+    }
+    Write-Output "`└ Uptime: `t$($SysInfo['Uptime'])" | Tee-Object -file $FilePath -Append
+    
+    # Hardware
+    Write-Output "`n┌ HARDWARE" | Tee-Object -file $FilePath -Append
     Write-Output "`| CPU: `t`t$($SysInfo['CPU'])" | Tee-Object -file $FilePath -Append
     foreach($VGA in $($SysInfo['GPU'])) {
         Write-Output "`| GPU $i`: `t$VGA" | Tee-Object -file $FilePath -Append
