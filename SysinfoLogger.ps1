@@ -76,7 +76,9 @@
 # Parameters
 param(
     [string[]]$Remote=@(), 
-    [string]$Path
+    [string]$Path,
+    [string]$Username,
+    [securestring]$Password
 )
 
 ###################################################################################################################
