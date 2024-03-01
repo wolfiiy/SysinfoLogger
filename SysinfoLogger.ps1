@@ -169,7 +169,7 @@ function Get-SystemInformation {
     Write-Output $Title | Tee-Object -file $FilePath -Append
     Write-Output "`n┌ SYSTEM INFORMATIONS" | Tee-Object -file $FilePath -Append
     Write-Output "`| Hostname: `t$($SysInfo['Hostname'])" | Tee-Object -file $FilePath -Append
-	Write-Output "`| IP: `t`t$($SysInfo['IPAddress'])" | Tee-Object -file $FilePath -Append
+    Write-Output "`| IP: `t`t$($SysInfo['IPAddress'])" | Tee-Object -file $FilePath -Append
     Write-Output "`| OS: `t`t$($SysInfo['OSName'])" | Tee-Object -file $FilePath -Append
     Write-Output "`| Version: `t$($SysInfo['OSVersion']) Build $($SysInfo['OSBuild'])" | Tee-Object -file $FilePath -Append
     Write-Output "`| Uptime: `t$($SysInfo['Uptime'])" | Tee-Object -file $FilePath -Append
@@ -203,8 +203,7 @@ function Get-SystemInformation {
         if ($DiskSize -gt 0) {
             $DiskUsedPercent = [math]::Round($DiskUsed / $DiskSize * 100, 2)
             Write-Output "`| $DiskName `t`t$DiskUsed / $DiskSize Gb`, $DiskUsedPercent% used" | Tee-Object -file $FilePath -Append
-        }
-        else {
+        } else {
             $EmptyDisk++
         }
     }
@@ -224,12 +223,11 @@ if ($Remote -gt 0) {
         try {
             $HostName = [System.Net.Dns]::GetHostByAddress($PC).HostName
             
-            if ($Password -ne $null){
+            if ($Password -ne $null) {
                 $Password = ConvertTo-SecureString $Password -AsPlainText -Force
                 $cred = new-object -typename System.Management.Automation.PSCredential ($HostName,$Password)
                 New-PSSession -ComputerName $HostName -Credential $cred -erroraction 'silentlycontinue'
-            }
-            else{
+            } else {
                 New-PSSession -ComputerName $HostName -Credential Get-Credential -erroraction 'silentlycontinue'
             }
             
