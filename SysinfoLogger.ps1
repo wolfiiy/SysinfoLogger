@@ -40,24 +40,28 @@
     ╔═══════════════════════════════════════════════════════════════════════════════╗
     ║                               SYSTEM INFO LOGGER                              ║
     ╟═══════════════════════════════════════════════════════════════════════════════╣
-    ║ Log date: 2024.02.29 20:20:12                                                 ║
+    ║ Log date: 2024.03.01 15:11:12                                                 ║
     ╙━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╜
 
-    ┌ SYSTEM INFORMATIONS
+    ┌ OPERATING SYSTEM
     | Hostname:     VM-ICT122
+    | IP:           10.0.2.15
     | OS:           Microsoft Windows 11 Professionnel
     | Version:      10.0.22631 Build 22631
-    | Uptime:       01:02:29.5000000
-    | CPU:          AMD Ryzen 7 7800X3D 8-Core Processor
+    | Packages:     winget.exe choco.exe
+    └ Uptime:       01:22:49.5000000
+
+    ┌ HARDWARE
+    | CPU:          Intel(R) Core(TM) i7-8700 CPU @ 3.20GHz
     | GPU 0:        VirtualBox Graphics Adapter (WDDM)
-    └ RAM:          4.18 / 7.99 Gb
+    └ RAM:          4.63 / 7.99 Gb
 
     ┌ DISPLAYS
     | Moniteur non Plug-and-Play générique: x
     └ 1 display(s) in total
 
     ┌ STORAGE
-    | C:            22.2 / 49.12 Gb, 45.2% used
+    | C:            21.82 / 49.12 Gb, 44.42% used
     | D:            0.06 / 0.06 Gb, 100% used
     └ Found 2 partition(s)
 
