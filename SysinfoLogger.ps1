@@ -169,6 +169,7 @@ function Get-SystemInformation {
     Write-Output $Title | Tee-Object -file $FilePath -Append
     Write-Output "`n┌ SYSTEM INFORMATIONS" | Tee-Object -file $FilePath -Append
     Write-Output "`| Hostname: `t$($SysInfo['Hostname'])" | Tee-Object -file $FilePath -Append
+	Write-Output "`| IP: `t`t$($SysInfo['IPAddress'])" | Tee-Object -file $FilePath -Append
     Write-Output "`| OS: `t`t$($SysInfo['OSName'])" | Tee-Object -file $FilePath -Append
     Write-Output "`| Version: `t$($SysInfo['OSVersion']) Build $($SysInfo['OSBuild'])" | Tee-Object -file $FilePath -Append
     Write-Output "`| Uptime: `t$($SysInfo['Uptime'])" | Tee-Object -file $FilePath -Append
