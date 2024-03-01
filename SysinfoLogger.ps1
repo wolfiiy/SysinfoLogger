@@ -116,7 +116,7 @@ function Get-SystemInformation {
     $Data = {
         # Computer and OS
         $Hostname = (Get-CimInstance CIM_ComputerSystem).Name
-        $IPAddress = (Get-NetIPAddress | Where-Object {$_.AddressFamily -eq 'IPv4'}).IPAddress
+        $IPAddress = (Get-NetIPAddress | Where-Object {$_.AddressFamily -eq 'IPv4' -and $_.InterfaceAlias -notmatch "loopback"}).IPAddress
         $OS = (Get-CimInstance -ClassName CIM_OperatingSystem)
         $OSName = $OS.Caption
         $OSVersion = $OS.Version
