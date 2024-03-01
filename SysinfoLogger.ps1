@@ -127,11 +127,6 @@ function Get-SystemInformation {
         $PkgWinget = (Get-Command winget -ErrorAction SilentlyContinue).Name
         $PkgChoco = (Get-Command choco -ErrorAction SilentlyContinue).Name
         $PkgScoop = (Get-Command scoop -ErrorAction SilentlyContinue).Name
-        $PkgManagers = @{
-            "Winget" = $PkgWinget
-            "Choco" = $PkgChoco
-            "Scoop" = $PkgScoop
-        }
         $PkgManagers = "$PkgWinget $PkgChoco $PkgScoop"
 
         # Hardware and displays
@@ -185,11 +180,6 @@ function Get-SystemInformation {
     Write-Output "`| OS: `t`t$($SysInfo['OSName'])" | Tee-Object -file $FilePath -Append
     Write-Output "`| Version: `t$($SysInfo['OSVersion']) Build $($SysInfo['OSBuild'])" | Tee-Object -file $FilePath -Append
 
-    $InstalledPacman = ""
-    $Pacman = $($SysInfo['PkgManagers'])
-    foreach ($P in $Pacman.Keys) {
-        $InstalledPacman += "$($Pacman.$P) "
-    }
     $InstalledPacman = $($SysInfo['PkgManagers'])
     if ($InstalledPacman.Length -gt 0) {
         Write-Output "`| Packages: `t$InstalledPacman" | Tee-Object -file $FilePath -Append
