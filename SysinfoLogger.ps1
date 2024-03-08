@@ -19,11 +19,13 @@
     Collected information (in order):
     - Hostname
     - OS, version and build number
+    - IP
+    - Package managers
     - CPU, GPU
     - Connected displays
     - Memory usage
     - Disk usage
-    - Programms installed
+    - Installed software
 
 .PARAMETER Remote
     IP addresses of remote computers. Separate using a comma.
@@ -121,6 +123,7 @@ function Get-SystemInformation {
 
     $Data = {
         # Computer and OS
+        $Date = Get-Date -Format "yyyy/MM/dd HH:mm:ss"
         $Hostname = (Get-CimInstance CIM_ComputerSystem).Name
         $IPAddress = (Get-NetIPAddress | Where-Object {$_.AddressFamily -eq 'IPv4' -and $_.InterfaceAlias -notmatch "loopback"}).IPAddress
         $OS = (Get-CimInstance -ClassName CIM_OperatingSystem)
