@@ -83,7 +83,6 @@
 param(
     [string[]]$Remote=@(), 
     [string]$Path,
-    [string]$Username,
     $Password
 )
 
