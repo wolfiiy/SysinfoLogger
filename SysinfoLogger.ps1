@@ -254,7 +254,6 @@ if ($Remote -gt 0) {
             }
             
             Get-SystemInformation -ComputerName $HostName -IsLocal $false
-            # Remove-PSSession
         } catch {
             Write-Error "Logging for $HostName failed." 
             Write-Host $_.ScriptStackTrace
